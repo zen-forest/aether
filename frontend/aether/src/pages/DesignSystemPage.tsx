@@ -1,7 +1,7 @@
 import {
   TextBlock,
   type TextBlockVariant,
-} from './components/TextBlock.tsx'
+} from '../components/TextBlock.tsx'
 
 const textStyles: ReadonlyArray<{
   label: string
@@ -26,14 +26,14 @@ const textStyles: ReadonlyArray<{
   { variant: 'caption-2', label: 'Caption 2 · 9/14', sample: 'The smallest supporting label' },
 ]
 
-function App() {
+function DesignSystemPage() {
   return (
     <main className="min-h-screen bg-neutral-950 px-6 py-16 text-neutral-100 sm:px-10">
       <div className="mx-auto max-w-5xl">
         <TextBlock variant="subhead-mono" className="text-neutral-500">
           AETHER / DESIGN SYSTEM
         </TextBlock>
-        <TextBlock as="h1" variant="large-title" className="mt-3">
+        <TextBlock variant="large-title" className="mt-3">
           Typography
         </TextBlock>
         <TextBlock className="mt-3 max-w-xl text-neutral-400">
@@ -59,4 +59,4 @@ function App() {
   )
 }
 
-export default App
+export default DesignSystemPage

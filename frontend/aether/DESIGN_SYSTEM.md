@@ -2,6 +2,8 @@
 
 ## Typography
 
+The live reference page starts with typography at `/design-system`.
+
 Aether uses two locally bundled variable fonts:
 
 - **Geist** for interface and editorial text.
@@ -37,11 +39,9 @@ Import the component from `src/components/TextBlock.tsx` and select a visual sty
 ```tsx
 import { TextBlock } from './components/TextBlock.tsx'
 
-<TextBlock as="h1" variant="large-title">
-  Account activity
-</TextBlock>
+<TextBlock variant="large-title">Account activity</TextBlock>
 
 <TextBlock variant="body-mono">request_id aether_01</TextBlock>
 ```
 
-`TextBlock` renders a `p` by default and defaults to the `body` variant. Use `as` to choose the correct semantic element without changing its visual style. Native props and `className` are forwarded to that element.
+`TextBlock` always renders a `p` and defaults to the `body` variant. Native paragraph props and `className` are forwarded to that element.

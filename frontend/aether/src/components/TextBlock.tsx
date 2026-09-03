@@ -1,8 +1,4 @@
-import type {
-  ComponentPropsWithoutRef,
-  ElementType,
-  ReactNode,
-} from 'react'
+import type { ComponentPropsWithoutRef } from 'react'
 
 const variantClasses = {
   'large-title': 'font-sans text-[36px] leading-[44px]',
@@ -25,32 +21,23 @@ const variantClasses = {
 
 export type TextBlockVariant = keyof typeof variantClasses
 
-type TextBlockOwnProps<E extends ElementType> = {
-  as?: E
-  children?: ReactNode
-  className?: string
+export type TextBlockProps = ComponentPropsWithoutRef<'p'> & {
   variant?: TextBlockVariant
 }
 
-export type TextBlockProps<E extends ElementType = 'p'> =
-  TextBlockOwnProps<E> &
-    Omit<ComponentPropsWithoutRef<E>, keyof TextBlockOwnProps<E>>
-
-export function TextBlock<E extends ElementType = 'p'>({
-  as,
+export function TextBlock({
   children,
   className,
   variant = 'body',
   ...props
-}: TextBlockProps<E>) {
-  const Component = as ?? 'p'
+}: TextBlockProps) {
   const classes = className
     ? `${variantClasses[variant]} ${className}`
     : variantClasses[variant]
 
   return (
-    <Component className={classes} data-text-variant={variant} {...props}>
+    <p className={classes} data-text-variant={variant} {...props}>
       {children}
-    </Component>
+    </p>
   )
 }

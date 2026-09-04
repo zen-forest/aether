@@ -1,7 +1,7 @@
 import Markdown, { type Components } from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 
-import { TextBlock } from '@/components/TextBlock'
+import { Text } from '@/components/Text'
 import { textVariantClasses } from '@/components/textVariants'
 
 const markdownComponents: Components = {
@@ -21,7 +21,7 @@ const markdownComponents: Components = {
     </h3>
   ),
   p: ({ children }) => (
-    <TextBlock className="mt-4 text-text-secondary">{children}</TextBlock>
+    <Text className="mt-4 text-text-secondary">{children}</Text>
   ),
   a: ({ children, href }) => (
     <a
@@ -46,17 +46,17 @@ const markdownComponents: Components = {
     <strong className="font-semibold text-text-primary">{children}</strong>
   ),
   code: ({ children }) => (
-    <code className="rounded bg-background-offset-plus px-1.5 py-0.5 font-mono text-[0.9em] text-text-primary">
+    <code className="rounded-sm bg-background-offset-plus px-1.5 py-0.5 font-mono text-[0.9em] text-text-primary">
       {children}
     </code>
   ),
   pre: ({ children }) => (
-    <pre className={`${textVariantClasses['subhead-mono']} mt-4 overflow-x-auto rounded-xl border border-border-base bg-background-base p-4 text-text-primary [&_code]:bg-transparent [&_code]:p-0 [&_code]:text-[inherit]`}>
+    <pre className={`${textVariantClasses['subhead-mono']} mt-4 overflow-x-auto rounded-md border border-border-base bg-background-base p-4 text-text-primary [&_code]:bg-transparent [&_code]:p-0 [&_code]:text-[inherit]`}>
       {children}
     </pre>
   ),
   table: ({ children }) => (
-    <div className="mt-6 overflow-x-auto rounded-xl border border-border-base">
+    <div className="mt-6 overflow-x-auto rounded-md border border-border-base">
       <table className={`${textVariantClasses.subhead} w-full border-collapse text-left`}>
         {children}
       </table>
@@ -91,7 +91,7 @@ export type DocumentCardProps = {
 
 export function DocumentCard({ name, source, href }: DocumentCardProps) {
   return (
-    <details className="group overflow-hidden rounded-2xl border border-border-base">
+    <details className="group overflow-hidden rounded-lg border border-border-base">
       <summary className="flex cursor-pointer list-none items-center gap-3 bg-background-offset py-2 pr-3 pl-5 transition-colors group-open:border-b group-open:border-border-base hover:bg-background-offset-plus [&::-webkit-details-marker]:hidden">
         <svg
           aria-hidden="true"
@@ -105,9 +105,9 @@ export function DocumentCard({ name, source, href }: DocumentCardProps) {
         >
           <path d="M6 3.5 10.5 8 6 12.5" />
         </svg>
-        <TextBlock variant="subhead-mono" className="flex-1 text-text-secondary">
+        <Text as="span" variant="subhead-mono" className="flex-1 text-text-secondary">
           {name}
-        </TextBlock>
+        </Text>
         <a
           href={href}
           download={name}
@@ -125,9 +125,9 @@ export function DocumentCard({ name, source, href }: DocumentCardProps) {
           >
             <path d="M8 2.5v8m0 0L5 7.5m3 3 3-3M3 12.5h10" />
           </svg>
-          <TextBlock variant="subhead" className="text-inherit">
+          <Text as="span" variant="subhead" className="text-inherit">
             Download
-          </TextBlock>
+          </Text>
         </a>
       </summary>
       <div className="px-6 py-8 sm:px-10 sm:py-10">

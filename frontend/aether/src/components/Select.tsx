@@ -1,6 +1,6 @@
 import { Select as BaseSelect } from '@base-ui/react/select'
 import { CheckIcon, ChevronDownIcon } from 'lucide-react'
-import type { ComponentProps } from 'react'
+import type { ComponentProps, ReactNode } from 'react'
 
 import { cn } from '@/lib/utils'
 
@@ -17,13 +17,17 @@ export const Select = BaseSelect.Root
 export function SelectTrigger({
   className,
   children,
+  placeholder,
   ...props
-}: ComponentProps<typeof BaseSelect.Trigger>) {
+}: ComponentProps<typeof BaseSelect.Trigger> & {
+  /** Shown in `text/secondary` while no value is selected. */
+  placeholder?: ReactNode
+}) {
   return (
     <BaseSelect.Trigger
       className={cn(
         textVariantClasses.body,
-        'flex h-8 w-full min-w-0 items-center justify-between gap-2 rounded-lg border border-border-base bg-background-offset px-2.5 text-left text-text-primary transition-colors outline-none select-none',
+        'flex h-8 w-full min-w-0 items-center justify-between gap-2 rounded-md border border-border-base bg-background-offset px-2.5 text-left text-text-primary transition-colors outline-none select-none',
         'hover:border-border-offset data-[popup-open]:border-border-offset',
         'focus-visible:border-border-offset-plus',
         'data-[placeholder]:text-text-secondary data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
@@ -31,7 +35,7 @@ export function SelectTrigger({
       )}
       {...props}
     >
-      {children ?? <BaseSelect.Value className="truncate" />}
+      {children ?? <BaseSelect.Value className="truncate" placeholder={placeholder} />}
       <BaseSelect.Icon className="flex shrink-0 text-text-secondary">
         <ChevronDownIcon aria-hidden="true" className="size-4" />
       </BaseSelect.Icon>
@@ -51,8 +55,8 @@ export function SelectPopup({
       <BaseSelect.Positioner sideOffset={sideOffset} className="z-50 outline-none">
         <BaseSelect.Popup
           className={cn(
-            'min-w-(--anchor-width) origin-(--transform-origin) rounded-lg border border-border-base bg-background-offset p-1 text-text-primary shadow-lg outline-none',
-            'transition-[transform,opacity] duration-100 data-[ending-style]:scale-95 data-[ending-style]:opacity-0 data-[starting-style]:scale-95 data-[starting-style]:opacity-0',
+            'min-w-(--anchor-width) origin-(--transform-origin) rounded-md border border-border-base bg-background-offset p-1 text-text-primary shadow-md outline-none',
+            'transition-[opacity,scale] duration-100 data-[ending-style]:scale-95 data-[ending-style]:opacity-0 data-[starting-style]:scale-95 data-[starting-style]:opacity-0',
             className,
           )}
           {...props}

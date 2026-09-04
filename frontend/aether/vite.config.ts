@@ -6,6 +6,8 @@ import tailwindcss from '@tailwindcss/vite'
 import { tanstackRouter } from '@tanstack/router-plugin/vite'
 import { defineConfig } from 'vite'
 
+import { aetherTheme } from './src/theme/vite-plugin.ts'
+
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
@@ -16,6 +18,7 @@ export default defineConfig({
     react(),
     babel({ presets: [reactCompilerPreset()] }),
     tailwindcss(),
+    aetherTheme(),
   ],
   resolve: {
     alias: {

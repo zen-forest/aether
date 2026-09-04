@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils'
 export function Panel({ className, ...props }: ComponentPropsWithoutRef<'div'>) {
   return (
     <div
-      className={cn('overflow-hidden rounded-2xl border border-border-base', className)}
+      className={cn('overflow-hidden rounded-lg border border-border-base', className)}
       {...props}
     />
   )

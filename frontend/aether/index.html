@@ -5,6 +5,20 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>aether</title>
+    <script>
+      // Pick the theme before first paint so there is no flash. Theme ids
+      // must match src/theme/themes.ts; src/theme/store.ts corrects unknown ids.
+      ;(function () {
+        var id = null
+        try {
+          id = localStorage.getItem('aether-theme')
+        } catch (e) {}
+        if (!id) {
+          id = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'
+        }
+        document.documentElement.dataset.theme = id
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>

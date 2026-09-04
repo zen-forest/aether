@@ -2,21 +2,34 @@
 @import '@fontsource-variable/geist-mono';
 @import 'tailwindcss';
 
-/* `applyTheme` sets data-theme on <html>; `dark:` follows it, not the OS. */
+/* index.html sets data-theme on <html> before paint; `dark:` follows it, not the OS. */
 @custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
 
 @theme {
   --color-*: initial;
+  --radius-*: initial;
+  --shadow-*: initial;
+  --inset-shadow-*: initial;
 
   --font-sans: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
   --font-mono: 'Geist Mono Variable', ui-monospace, monospace;
 }
 
 /*
- * Color utilities resolve to runtime variables written by `applyTheme`
- * (src/theme/applyTheme.ts). Values live only in src/theme/themes.ts.
+ * Utilities resolve to custom properties defined in `virtual:aether-theme.css`,
+ * generated from src/theme/themes.ts and src/theme/tokens.ts. Values live only
+ * there; this block declares which utilities exist.
  */
 @theme inline {
+  --radius-sm: var(--radii-sm);
+  --radius-md: var(--radii-md);
+  --radius-lg: var(--radii-lg);
+  --radius-xl: var(--radii-xl);
+
+  --shadow-sm: var(--elevation-sm);
+  --shadow-md: var(--elevation-md);
+  --shadow-lg: var(--elevation-lg);
+
   --color-text-primary: var(--text-primary);
   --color-text-primary-inverse: var(--text-primary-inverse);
   --color-text-secondary: var(--text-secondary);

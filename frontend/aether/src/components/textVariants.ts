@@ -17,4 +17,4 @@ export const textVariantClasses = {
   'caption-2': 'font-sans text-[9px] leading-[14px]',
 } as const
 
-export type TextBlockVariant = keyof typeof textVariantClasses
+export type TextVariant = keyof typeof textVariantClasses

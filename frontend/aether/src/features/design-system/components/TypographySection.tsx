@@ -1,4 +1,4 @@
-import { TextBlock, type TextBlockVariant } from '@/components/TextBlock'
+import { Text, type TextVariant } from '@/components/Text'
 
 import { Panel, PanelRow } from './Panel'
 import { Section } from './Section'
@@ -6,7 +6,7 @@ import { Section } from './Section'
 const textStyles: ReadonlyArray<{
   label: string
   sample: string
-  variant: TextBlockVariant
+  variant: TextVariant
 }> = [
   { variant: 'large-title', label: 'Large title · 36/44', sample: 'Designing with clarity' },
   { variant: 'title-2', label: 'Title 2 · 24/32', sample: 'A system for product interfaces' },
@@ -39,10 +39,10 @@ export function TypographySection() {
             key={variant}
             className="py-5 sm:grid-cols-[180px_1fr] sm:items-baseline"
           >
-            <TextBlock variant="caption-1-mono" className="text-text-secondary">
+            <Text variant="caption-1-mono" className="text-text-secondary">
               {label}
-            </TextBlock>
-            <TextBlock variant={variant}>{sample}</TextBlock>
+            </Text>
+            <Text variant={variant}>{sample}</Text>
           </PanelRow>
         ))}
       </Panel>

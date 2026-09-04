@@ -1,5 +1,5 @@
 import { Select, SelectItem, SelectPopup, SelectTrigger } from '@/components/Select'
-import { TextBlock } from '@/components/TextBlock'
+import { Text } from '@/components/Text'
 import { themes } from '@/theme/themes'
 import type { Theme } from '@/theme/tokens'
 
@@ -12,9 +12,9 @@ export function ThemeSelect({
 }) {
   return (
     <div>
-      <TextBlock variant="caption-1-mono" className="text-text-secondary">
+      <Text as="span" variant="caption-1-mono" className="block text-text-secondary">
         THEME
-      </TextBlock>
+      </Text>
       <Select
         value={value.id}
         onValueChange={(id) => {

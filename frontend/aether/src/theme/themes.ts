@@ -44,18 +44,26 @@ export const dark: Theme = {
     'status/info': darkHues.blue.solid,
     notification: darkHues.red.solid,
   },
+  shadows: {
+    sm: '0 1px 2px rgb(0 0 0 / 0.4)',
+    md: '0 4px 12px -2px rgb(0 0 0 / 0.5), 0 1px 2px rgb(0 0 0 / 0.4)',
+    lg: '0 16px 40px -12px rgb(0 0 0 / 0.6), 0 2px 6px rgb(0 0 0 / 0.4)',
+  },
 }
 
+// `fg` values are tuned per hue so fg on subtle (over base or offset) clears 4.5:1;
+// see src/theme/contrast.test.ts. Most are Tailwind 700 shades; the warmer and
+// greener hues need 800.
 const lightHues: Record<Hue, HuePalette> = {
   red: palette('#e7000b', '#c10007'),
-  orange: palette('#f54a00', '#ca3500'),
-  amber: palette('#e17100', '#bb4d00'),
-  green: palette('#00a63e', '#008236'),
-  teal: palette('#009689', '#00786f'),
+  orange: palette('#f54a00', '#9f2d00'),
+  amber: palette('#e17100', '#973c00'),
+  green: palette('#00a63e', '#016630'),
+  teal: palette('#009689', '#005f5a'),
   blue: palette('#155dfc', '#1447e6'),
   indigo: palette('#4f39f6', '#432dd7'),
   purple: palette('#9810fa', '#8200db'),
-  pink: palette('#e60076', '#c6005c'),
+  pink: palette('#e60076', '#a3004c'),
 }
 
 export const light: Theme = {
@@ -66,7 +74,7 @@ export const light: Theme = {
   semantic: {
     'text/primary': '#0a0a0a',
     'text/primary/inverse': '#fafafa',
-    'text/secondary': '#6b6b6b',
+    'text/secondary': '#666666',
     'text/secondary/inverse': '#a1a1a1',
     'background/base': '#ffffff',
     'background/offset': '#f5f5f5',
@@ -79,6 +87,11 @@ export const light: Theme = {
     'status/warning': lightHues.amber.solid,
     'status/info': lightHues.blue.solid,
     notification: lightHues.red.solid,
+  },
+  shadows: {
+    sm: '0 1px 2px rgb(0 0 0 / 0.06)',
+    md: '0 4px 12px -2px rgb(0 0 0 / 0.10), 0 1px 2px rgb(0 0 0 / 0.06)',
+    lg: '0 16px 40px -12px rgb(0 0 0 / 0.18), 0 2px 6px rgb(0 0 0 / 0.06)',
   },
 }
 

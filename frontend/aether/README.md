@@ -9,24 +9,38 @@ pnpm install
 pnpm dev
 ```
 
-Additional checks:
+Checks (all run in CI on every push and pull request via `.github/workflows/ci.yml`):
 
 ```sh
-pnpm lint
+pnpm lint          # eslint, including token-enforcement rules
+pnpm exec tsc -b   # typecheck app, scripts, and mcp
+pnpm test          # vitest: WCAG contrast for every theme, theme CSS generation
 pnpm build
+```
+
+Design-system tooling:
+
+```sh
+pnpm tokens        # regenerate tokens.json (W3C Design Tokens) from src/theme
+pnpm mcp           # start the MCP server for coding agents (see mcp/README.md)
 ```
 
 ## Project structure
 
 ```
 src/
-  components/        shared, feature-agnostic building blocks (TextBlock, Select, …) on Base UI
+  components/        shared primitives on Base UI, styled with tokens (Text, Button, Field, Input,
+                     Textarea, Select, Switch, Checkbox, Tabs, Menu, Popover, Tooltip, Dialog)
   features/          one folder per product area; owns its page and private components
-    design-system/   DesignSystemPage + components/ (DocumentCard, sections, ThemeSelect)
+    design-system/   DesignSystemPage + components/ (one <Name>Section per primitive, DocumentCard)
     home/            HomePage
   routes/            TanStack file routes; each imports a page from features/ and exports Route
-  theme/             color tokens, themes, applyTheme (app-wide infrastructure)
+  theme/             tokens, themes, generated CSS plugin, theme store, contrast math + tests
   lib/               framework-agnostic helpers (cn)
+scripts/             export-tokens.ts → tokens.json
+mcp/                 stdio MCP server exposing tokens, themes, components, design.md
+design.md            the design system's source of truth; rendered at /design-system
+tokens.json          generated; commit after `pnpm tokens`
 ```
 
 Rules:

@@ -42,18 +42,46 @@ export type HueRole = (typeof hueRoles)[number]
 
 export type HuePalette = Record<HueRole, string>
 
+/** Elevation steps. Values are full `box-shadow` lists and differ per theme. */
+export const shadowLevels = ['sm', 'md', 'lg'] as const
+
+export type ShadowLevel = (typeof shadowLevels)[number]
+
+/**
+ * Corner radii. Theme-independent; the only `rounded-*` utilities that exist.
+ * `full` is Tailwind's built-in pill radius and is not listed here.
+ */
+export const radius = {
+  sm: '6px',
+  md: '10px',
+  lg: '16px',
+  xl: '24px',
+} as const
+
+export type RadiusStep = keyof typeof radius
+
 export type Theme = {
   id: string
   label: string
   scheme: 'light' | 'dark'
   semantic: Record<SemanticToken, string>
   hues: Record<Hue, HuePalette>
+  shadows: Record<ShadowLevel, string>
 }
 
-/** `text/primary/inverse` → `--text-primary-inverse`; `red` + `fg` → `--red-fg`. */
+/**
+ * Runtime custom-property name for a token.
+ * `text/primary/inverse` → `--text-primary-inverse`; `red` + `fg` → `--red-fg`;
+ * shadows → `--elevation-sm`; radii → `--radii-sm`. Tailwind's own `--shadow-*`
+ * and `--radius-*` namespaces are reserved for the utilities that read these.
+ */
 export function cssVariable(token: SemanticToken): string
 export function cssVariable(hue: Hue, role: HueRole): string
-export function cssVariable(name: string, role?: HueRole): string {
+export function cssVariable(kind: 'shadow', level: ShadowLevel): string
+export function cssVariable(kind: 'radius', step: RadiusStep): string
+export function cssVariable(name: string, suffix?: string): string {
+  if (name === 'shadow') return `--elevation-${suffix}`
+  if (name === 'radius') return `--radii-${suffix}`
   const base = name.replaceAll('/', '-')
-  return role ? `--${base}-${role}` : `--${base}`
+  return suffix ? `--${base}-${suffix}` : `--${base}`
 }

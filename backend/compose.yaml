@@ -5,13 +5,13 @@ services:
     ports:
       - "8000:8000"
     environment:
-      DATABASE_URL: postgresql://${POSTGRES_USER:-aether}:${POSTGRES_PASSWORD:-aether}@db:5432/${POSTGRES_DB:-aether}
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-aether}:${POSTGRES_PASSWORD:-aether}@db:5432/${POSTGRES_DB:-aether}
     depends_on:
       db:
         condition: service_healthy
     volumes:
-      - ./src:/app/src
-    command: uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
+      - ./app:/app/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
   db:
     image: postgres:18-alpine
@@ -31,3 +31,4 @@ services:
 
 volumes:
   postgres_data:
+

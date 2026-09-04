@@ -6,12 +6,12 @@ Runs directly on Node 24 (no build step): `pnpm mcp` or `node mcp/server.ts`. It
 
 ## Registering
 
-The server must run with `frontend/aether` as its working directory. Use the absolute path to `mcp/server.ts` (`realpath mcp/server.ts`).
+The server must run with `frontend` as its working directory. Use the absolute path to `mcp/server.ts` (`realpath mcp/server.ts`).
 
 ### Claude Code
 
 ```sh
-claude mcp add aether-design-system -- node /abs/path/to/frontend/aether/mcp/server.ts
+claude mcp add aether-design-system -- node /abs/path/to/frontend/mcp/server.ts
 ```
 
 or in `.mcp.json` / `~/.claude.json`:
@@ -21,8 +21,8 @@ or in `.mcp.json` / `~/.claude.json`:
   "mcpServers": {
     "aether-design-system": {
       "command": "node",
-      "args": ["/abs/path/to/frontend/aether/mcp/server.ts"],
-      "cwd": "/abs/path/to/frontend/aether"
+      "args": ["/abs/path/to/frontend/mcp/server.ts"],
+      "cwd": "/abs/path/to/frontend"
     }
   }
 }
@@ -37,7 +37,7 @@ or in `.mcp.json` / `~/.claude.json`:
   "mcpServers": {
     "aether-design-system": {
       "command": "node",
-      "args": ["/abs/path/to/frontend/aether/mcp/server.ts"]
+      "args": ["/abs/path/to/frontend/mcp/server.ts"]
     }
   }
 }

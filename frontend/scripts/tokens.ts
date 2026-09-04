@@ -12,6 +12,7 @@ import {
   shadowLevels,
   type Theme,
 } from '../src/theme/tokens.ts'
+import { motionDurations, motionEasings, pressMotion, pressSpring } from '../src/theme/motion.ts'
 
 /**
  * W3C Design Tokens (DTCG) document. Colors stay as the CSS strings the
@@ -27,11 +28,12 @@ export type TokenDocument = {
   shadow: TokenGroup
   radius: TokenGroup
   typography: TokenGroup
+  motion: TokenGroup
 }
 
 export type TokenGroups = keyof Omit<TokenDocument, '$schema' | '$extensions'>
 
-export const tokenGroups = ['color', 'hue', 'shadow', 'radius', 'typography'] as const
+export const tokenGroups = ['color', 'hue', 'shadow', 'radius', 'typography', 'motion'] as const
 
 type RootExtensions = {
   defaultTheme: string
@@ -39,6 +41,8 @@ type RootExtensions = {
 }
 
 type Dimension = { value: number; unit: 'px' }
+type Duration = { value: number; unit: 'ms' }
+type CubicBezier = readonly [number, number, number, number]
 
 type Shadow = {
   offsetX: Dimension
@@ -56,10 +60,17 @@ type Typography = {
   lineHeight: Dimension | 'normal'
 }
 
-type TokenValue = string | Dimension | ReadonlyArray<Shadow> | Typography
+type TokenValue =
+  | string
+  | number
+  | Dimension
+  | Duration
+  | CubicBezier
+  | ReadonlyArray<Shadow>
+  | Typography
 
 type Token = {
-  $type: 'color' | 'dimension' | 'shadow' | 'typography'
+  $type: 'color' | 'dimension' | 'duration' | 'cubicBezier' | 'number' | 'shadow' | 'typography'
   $value: TokenValue
   $description?: string
   $extensions?: { aether: Record<string, unknown> }
@@ -276,6 +287,40 @@ function buildTypography(): TokenGroup {
   return group
 }
 
+function buildMotion(): TokenGroup {
+  const duration: TokenGroup = {}
+  for (const [name, seconds] of Object.entries(motionDurations)) {
+    duration[name] = {
+      $type: 'duration',
+      $value: { value: seconds * 1000, unit: 'ms' },
+    }
+  }
+
+  const easing: TokenGroup = {}
+  for (const [name, curve] of Object.entries(motionEasings)) {
+    easing[name] = {
+      $type: 'cubicBezier',
+      $value: curve,
+    }
+  }
+
+  const spring: TokenGroup = {}
+  for (const [name, value] of Object.entries(pressSpring)) {
+    if (name !== 'type') {
+      spring[name] = { $type: 'number', $value: value }
+    }
+  }
+
+  return {
+    duration,
+    easing,
+    press: {
+      scale: { $type: 'number', $value: pressMotion.whileTap.scale },
+      spring,
+    },
+  }
+}
+
 /** Build the full DTCG document from the theme and typography sources. */
 export function buildTokens(): TokenDocument {
   return {
@@ -291,6 +336,7 @@ export function buildTokens(): TokenDocument {
     shadow: buildShadow(),
     radius: buildRadius(),
     typography: buildTypography(),
+    motion: buildMotion(),
   }
 }
 

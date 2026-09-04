@@ -2,6 +2,7 @@ import { Tooltip as BaseTooltip } from '@base-ui/react/tooltip'
 import type { ComponentProps } from 'react'
 
 import { cn } from '@/lib/utils'
+import { popupMotionClasses } from '@/theme/motion'
 
 import { textVariantClasses } from './textVariants'
 
@@ -62,7 +63,7 @@ export function TooltipPopup({
           className={cn(
             textVariantClasses.subhead,
             'origin-(--transform-origin) rounded-sm bg-text-primary px-2 py-1 text-text-primary-inverse shadow-sm outline-none',
-            'transition-[opacity,scale] duration-100 data-[ending-style]:scale-95 data-[ending-style]:opacity-0 data-[starting-style]:scale-95 data-[starting-style]:opacity-0',
+            popupMotionClasses,
             'data-[instant]:transition-none',
             className,
           )}

@@ -1,8 +1,11 @@
 import { Select as BaseSelect } from '@base-ui/react/select'
 import { CheckIcon, ChevronDownIcon } from 'lucide-react'
+import { motion } from 'motion/react'
 import type { ComponentProps, ReactNode } from 'react'
 
 import { cn } from '@/lib/utils'
+import { selectPopupMotionClasses, stateMotionClasses } from '@/theme/motion'
+import { usePressMotion } from '@/theme/usePressMotion'
 
 import { textVariantClasses } from './textVariants'
 
@@ -18,13 +21,17 @@ export function SelectTrigger({
   className,
   children,
   placeholder,
+  render,
   ...props
 }: ComponentProps<typeof BaseSelect.Trigger> & {
   /** Shown in `text/secondary` while no value is selected. */
   placeholder?: ReactNode
 }) {
+  const motionProps = usePressMotion()
+
   return (
     <BaseSelect.Trigger
+      render={render ?? <motion.button {...motionProps} />}
       className={cn(
         textVariantClasses.body,
         'flex h-8 w-full min-w-0 items-center justify-between gap-2 rounded-md border border-border-base bg-background-offset px-2.5 text-left text-text-primary transition-colors outline-none select-none',
@@ -36,7 +43,12 @@ export function SelectTrigger({
       {...props}
     >
       {children ?? <BaseSelect.Value className="truncate" placeholder={placeholder} />}
-      <BaseSelect.Icon className="flex shrink-0 text-text-secondary">
+      <BaseSelect.Icon
+        className={cn(
+          'flex shrink-0 text-text-secondary transition-transform data-[popup-open]:rotate-180',
+          stateMotionClasses,
+        )}
+      >
         <ChevronDownIcon aria-hidden="true" className="size-4" />
       </BaseSelect.Icon>
     </BaseSelect.Trigger>
@@ -47,16 +59,26 @@ export function SelectPopup({
   className,
   children,
   sideOffset = 4,
+  align,
+  alignItemWithTrigger,
   ...props
 }: ComponentProps<typeof BaseSelect.Popup> &
-  Pick<ComponentProps<typeof BaseSelect.Positioner>, 'sideOffset' | 'align'>) {
+  Pick<
+    ComponentProps<typeof BaseSelect.Positioner>,
+    'sideOffset' | 'align' | 'alignItemWithTrigger'
+  >) {
   return (
     <BaseSelect.Portal>
-      <BaseSelect.Positioner sideOffset={sideOffset} className="z-50 outline-none">
+      <BaseSelect.Positioner
+        sideOffset={sideOffset}
+        align={align}
+        alignItemWithTrigger={alignItemWithTrigger}
+        className="z-50 outline-none"
+      >
         <BaseSelect.Popup
           className={cn(
             'min-w-(--anchor-width) origin-(--transform-origin) rounded-md border border-border-base bg-background-offset p-1 text-text-primary shadow-md outline-none',
-            'transition-[opacity,scale] duration-100 data-[ending-style]:scale-95 data-[ending-style]:opacity-0 data-[starting-style]:scale-95 data-[starting-style]:opacity-0',
+            selectPopupMotionClasses,
             className,
           )}
           {...props}

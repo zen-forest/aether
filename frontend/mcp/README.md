@@ -6,27 +6,26 @@ Runs directly on Node 24 (no build step): `pnpm mcp` or `node mcp/server.ts`. It
 
 ## Registering
 
-The server must run with `frontend` as its working directory. Use the absolute path to `mcp/server.ts` (`realpath mcp/server.ts`).
+The server resolves every path from its own file location, so the working directory does not matter. Node 24 runs the `.ts` file directly; `pnpm install` in `frontend/` must have been run once for `@modelcontextprotocol/sdk`.
 
-### Claude Code
+### Claude Code (already done for this repo)
 
-```sh
-claude mcp add aether-design-system -- node /abs/path/to/frontend/mcp/server.ts
-```
-
-or in `.mcp.json` / `~/.claude.json`:
+`/.mcp.json` at the repository root registers the server project-wide:
 
 ```json
 {
   "mcpServers": {
     "aether-design-system": {
       "command": "node",
-      "args": ["/abs/path/to/frontend/mcp/server.ts"],
-      "cwd": "/abs/path/to/frontend"
+      "args": ["frontend/mcp/server.ts"]
     }
   }
 }
 ```
+
+Claude Code spawns it automatically when a session starts in this repo (first time, it asks you to approve the project's servers). Check with `claude mcp list` from the shell or `/mcp` inside a session; a connected server lists its five tools. Nothing needs to be running beforehand.
+
+To register it personally instead (any directory): `claude mcp add aether-design-system -- node /abs/path/to/frontend/mcp/server.ts`.
 
 ### Cursor
 
@@ -43,13 +42,11 @@ or in `.mcp.json` / `~/.claude.json`:
 }
 ```
 
-Cursor has no `cwd` field; the server resolves every path from its own file location, so the working directory does not matter.
-
 ## Tools
 
 | Tool | Arguments | Returns |
 | --- | --- | --- |
-| `list_tokens` | `group?`: `color` \| `hue` \| `shadow` \| `radius` \| `typography` | The W3C Design Tokens (DTCG) document, or just one top-level group. Same output as `pnpm tokens` / `tokens.json`. Themed tokens carry `$value` for the default theme and `$extensions.aether.values` keyed by theme id. |
+| `list_tokens` | `group?`: `color` \| `hue` \| `shadow` \| `radius` \| `typography` \| `motion` | The W3C Design Tokens (DTCG) document, or just one top-level group. Same output as `pnpm tokens` / `tokens.json`. Themed tokens carry `$value` for the default theme and `$extensions.aether.values` keyed by theme id. |
 | `get_theme` | `id`: theme id (`dark`, `light`) | The full `Theme` object from `src/theme/themes.ts`: `semantic` colors, `hues` palettes, `shadows`. Errors on an unknown id and lists the known ones. |
 | `list_components` | none | Every `src/components/*.tsx` file with its exported functions and the first paragraph of each export's JSDoc. |
 | `get_component` | `name`: file name without extension (`Button`, `Select`) | The full TypeScript source of that component file. |
@@ -69,4 +66,5 @@ Cursor has no `cwd` field; the server resolves every path from its own file loca
 - `shadow.<level>` — arrays of DTCG shadow objects parsed from the CSS `box-shadow` lists; the raw CSS per theme is under `$extensions.aether.css`.
 - `radius.<step>` — `dimension` tokens.
 - `typography.<variant>` — `fontFamily` (stack from `src/index.css`), `fontSize`, `fontWeight`, `lineHeight` (px dimension or `"normal"`) parsed from `src/components/textVariants.ts`; the source class string is under `$extensions.aether.classes`.
+- `motion.duration`, `motion.easing`, `motion.press` — semantic timings, cubic Bézier curves, and Motion spring values from `src/theme/motion.ts`.
 - Root `$extensions.aether` lists `themes` (`id`, `label`, `scheme`) and `defaultTheme`.

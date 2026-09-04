@@ -2,6 +2,7 @@ import { Popover as BasePopover } from '@base-ui/react/popover'
 import type { ComponentProps } from 'react'
 
 import { cn } from '@/lib/utils'
+import { popupMotionClasses } from '@/theme/motion'
 
 import { textVariantClasses } from './textVariants'
 
@@ -47,7 +48,7 @@ export function PopoverPopup({
         <BasePopover.Popup
           className={cn(
             'w-72 origin-(--transform-origin) rounded-lg border border-border-base bg-background-offset p-4 text-text-primary shadow-md outline-none',
-            'transition-[opacity,scale] duration-100 data-[ending-style]:scale-95 data-[ending-style]:opacity-0 data-[starting-style]:scale-95 data-[starting-style]:opacity-0',
+            popupMotionClasses,
             className,
           )}
           {...props}

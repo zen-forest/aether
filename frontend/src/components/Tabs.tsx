@@ -2,6 +2,7 @@ import { Tabs as BaseTabs } from '@base-ui/react/tabs'
 import { createContext, use, type ComponentProps } from 'react'
 
 import { cn } from '@/lib/utils'
+import { spatialMotionClasses } from '@/theme/motion'
 
 import { textVariantClasses } from './textVariants'
 
@@ -79,7 +80,8 @@ export function TabsIndicator({
   return (
     <BaseTabs.Indicator
       className={cn(
-        'absolute -bottom-px left-0 h-0.5 w-(--active-tab-width) translate-x-(--active-tab-left) bg-text-primary transition-[translate,width] duration-200 ease-out',
+        'absolute -bottom-px left-0 h-0.5 w-(--active-tab-width) translate-x-(--active-tab-left) bg-text-primary transition-[translate,width]',
+        spatialMotionClasses,
         className,
       )}
       {...props}

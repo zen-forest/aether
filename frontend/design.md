@@ -1,6 +1,6 @@
 # Aether Design System
 
-This file is the written source of truth for the system. The live reference at `/design-system` renders it inline at the top of the page and offers it for download, then walks through the foundations (typography, color, shape) and every component with live examples.
+This file is the written source of truth for the system. The live reference at `/design-system` renders it inline at the top of the page and offers it for download, then walks through the foundations (typography, color, shape, motion) and every component with live examples.
 
 ## Typography
 
@@ -133,6 +133,41 @@ Radius and elevation are tokens too; Tailwind's `rounded-*` and `shadow-*` defau
 
 Radii live in `src/theme/tokens.ts` (`radius`) and are theme-independent. Shadows live on each theme in `themes.ts` because dark surfaces need heavier, tighter shadows to register. On dark themes a shadow never replaces a border; use both.
 
+## Motion
+
+Motion is functional: it confirms direct manipulation, explains a state change, or preserves spatial continuity. It never runs only for decoration. The canonical values and reusable recipes live in `src/theme/motion.ts`; Motion for React is imported from `motion/react`.
+
+### Tokens
+
+| Token | Value | Use |
+| --- | ---: | --- |
+| `duration/feedback` | 100ms | Immediate hover and press-adjacent feedback |
+| `duration/overlay` | 150ms | Popup, dialog, and compact state transitions |
+| `duration/spatial` | 200ms | Position changes whose destination must stay legible |
+| `easing/enter` | `cubic-bezier(0, 0, 0.2, 1)` | Elements entering the interface |
+| `easing/standard` | `cubic-bezier(0.2, 0, 0, 1)` | State and position changes |
+| `easing/exit` | `cubic-bezier(0.4, 0, 1, 1)` | Elements leaving the interface |
+| `spring/press` | stiffness 500, damping 28, mass 0.5 | Direct press feedback |
+
+### Patterns
+
+- **Direct manipulation.** `Button`, `SelectTrigger`, `Switch`, and `Checkbox` scale to `0.97` while pressed and return on `pressSpring`. Use Motion for this gesture; do not reproduce it with an `active:scale-*` class.
+- **State change.** Color, switch-thumb translation, select-chevron rotation, checkbox indicator, and disclosure rotation use `stateMotionClasses` (150ms). A moving tab indicator uses `spatialMotionClasses` (200ms).
+- **Overlays.** Select, menu, popover, tooltip, and dialog use `data-starting-style` / `data-ending-style` with the shared popup recipes. These transitions are interruptible, and Base UI keeps the element mounted until its exit transition finishes. Anchored popups fade from `scale(0.98)` at their computed transform origin; dialogs use `scale(0.96)`. Select's native-style item-aligned placement (`data-side="none"`) stays still, per Base UI's animation guidance.
+- **Reduced motion.** The application root sets `<MotionConfig reducedMotion="user">` for Motion animations. Direct-press components use `usePressMotion()` to remove the gesture entirely when the operating system requests reduced motion. Every CSS recipe includes `motion-reduce:transition-none`.
+- **Scope.** Animate `transform` and `opacity` where possible. Never animate layout dimensions for decoration, add page-load choreography, or delay input response.
+
+```tsx
+import { motion } from 'motion/react'
+
+import { usePressMotion } from '@/theme/usePressMotion'
+
+function Pressable() {
+  const motionProps = usePressMotion()
+  return <motion.button {...motionProps}>Press me</motion.button>
+}
+```
+
 ## Components
 
 Components are Aether's own, built on [Base UI](https://base-ui.com) headless primitives (`@base-ui/react`) and styled only with the tokens and text styles above. They live in `src/components/`, one file per component, and are the sole vocabulary for interactive UI: there is no second component library and no alias layer.
@@ -148,14 +183,14 @@ A styled kit ships its own color vocabulary (`card`, `muted`, `accent`, …) and
 - **Text.** Use `textVariantClasses` from `@/components/textVariants` inside components (`body` for controls, `subhead` for dense lists). Never `text-sm`-style ad hoc sizes.
 - **Icons.** `lucide-react`, sized with `size-4`, `aria-hidden`.
 - **Class merging.** `cn()` from `@/lib/utils` so call-site `className` overrides win.
-- **Popups.** Rendered through `Portal` + `Positioner`; `#root { isolation: isolate }` in `index.css` keeps them stacked above the app. Enter and exit use `data-starting-style` / `data-ending-style` with `transition-[opacity,scale]` — Tailwind v4's `scale-*` sets the `scale` property, so `transition-transform` alone would snap.
+- **Popups.** Rendered through `Portal` + `Positioner`; `#root { isolation: isolate }` in `index.css` keeps them stacked above the app. Enter and exit use `popupMotionClasses` (or `dialogMotionClasses`) from `src/theme/motion.ts`, built on Base UI's `data-starting-style` / `data-ending-style`. Tailwind v4's `scale-*` sets the `scale` property, so `transition-transform` alone would snap.
 - **Focus rings.** `focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-border-offset-plus` for buttons and toggles; border step-up (`focus-visible:border-border-offset-plus`) for inputs and triggers. Never add a base `outline-none` next to an outline ring: in Tailwind v4 it sets `--tw-outline-style: none`, which `outline-2` inherits, and the ring vanishes.
-- **Triggers.** `DialogTrigger`, `MenuTrigger`, `PopoverTrigger`, `TooltipTrigger` are unstyled. Give them `className={buttonClasses('secondary')}` or `render={<Button />}` so they read as buttons.
+- **Triggers.** `DialogTrigger`, `MenuTrigger`, `PopoverTrigger`, and `TooltipTrigger` are unstyled. Prefer `render={<Button />}` for button triggers so semantics, styling, and press motion travel together. Use `buttonClasses()` only when the underlying element is intentionally not a `Button`.
 - **Exports.** One component per file, named exports, no `index.ts` barrels. Compose parts (`Select`, `SelectTrigger`, `SelectPopup`, `SelectItem`) rather than exposing one component with many props.
 
 ### `Button`
 
-Action button on Base UI's `Button`. Emphasis is monochrome: `primary` inverts the surface (`bg-text-primary text-text-primary-inverse`), `secondary` (default) sits on `background/offset` with `border/base` and steps to `offset/plus` + `border/offset` on hover, `ghost` has no surface until hover, and `destructive` is the only colored button (`bg-status-error` with inverse text, 4.6:1 light / 5.0:1 dark). Sizes: `md` is 32px, `rounded-md`, body type; `sm` is 28px, `rounded-sm`, subhead type. Focus-visible draws a 2px `border/offset/plus` outline with 2px offset; disabled buttons get `data-disabled` from Base UI and render at 50% opacity, pointer-events none. Icons go in as children.
+Action button on Base UI's `Button` with a Motion-powered press gesture: it scales to `0.97` while pressed and returns on the shared, highly damped spring. Emphasis is monochrome: `primary` inverts the surface (`bg-text-primary text-text-primary-inverse`), `secondary` (default) sits on `background/offset` with `border/base` and steps to `offset/plus` + `border/offset` on hover, `ghost` has no surface until hover, and `destructive` is the only colored button (`bg-status-error` with inverse text, 4.6:1 light / 5.0:1 dark). Sizes: `md` is 32px, `rounded-md`, body type; `sm` is 28px, `rounded-sm`, subhead type. Focus-visible draws a 2px `border/offset/plus` outline with 2px offset; disabled buttons get `data-disabled` from Base UI and render at 50% opacity, pointer-events none. Icons go in as children.
 
 ```tsx
 import { Button } from '@/components/Button'
@@ -175,7 +210,7 @@ import { buttonClasses } from '@/components/buttonVariants'
 <a href="/docs" className={buttonClasses('secondary', 'md')}>Docs</a>
 ```
 
-Props: `variant: 'primary' | 'secondary' | 'ghost' | 'destructive'` (default `secondary`), `size: 'sm' | 'md'` (default `md`), `iconOnly?: boolean` (square `w-8`/`w-7`, `px-0`; the props union makes `aria-label` required when set), plus every Base UI Button prop (`disabled`, `focusableWhenDisabled`, `nativeButton`, `render`). `buttonClasses(variant, size, iconOnly)` from `buttonVariants.ts` returns the same class string for non-button elements. Note: no base `outline-none` — in Tailwind v4 it sets `--tw-outline-style: none`, which `outline-2` inherits and the focus ring disappears.
+Props: `variant: 'primary' | 'secondary' | 'ghost' | 'destructive'` (default `secondary`), `size: 'sm' | 'md'` (default `md`), `iconOnly?: boolean` (square `w-8`/`w-7`, `px-0`; the props union makes `aria-label` required when set), plus every Base UI Button prop (`disabled`, `focusableWhenDisabled`, `nativeButton`, `render`). The default rendered element is `motion.button`; a custom `render` element owns its own motion. `buttonClasses(variant, size, iconOnly)` returns only the visual classes for non-button elements and does not add the press spring. For Base UI button triggers, prefer `render={<Button />}` so behavior and motion stay intact. Note: no base `outline-none` — in Tailwind v4 it sets `--tw-outline-style: none`, which `outline-2` inherits and the focus ring disappears.
 
 ### `Field`, `FieldLabel`, `FieldDescription`, `FieldError`
 
@@ -221,7 +256,7 @@ Multi-line control: a native `<textarea>` registered as the field control throug
 
 ### `Select`
 
-Single-value choice from a short list, built on `@base-ui/react/select`. Trigger and popup sit on `background/offset` (`rounded-md`, `border/base` → `border/offset` on hover/open → `border/offset/plus` on focus); the highlighted item steps to `offset/plus`; the selected item shows a check.
+Single-value choice from a short list, built on `@base-ui/react/select`. Trigger and popup sit on `background/offset` (`rounded-md`, `border/base` → `border/offset` on hover/open → `border/offset/plus` on focus); the highlighted item steps to `offset/plus`; the selected item shows a check. The popup uses the shared 150ms Base UI lifecycle recipe, fading and scaling from `0.98` at `--transform-origin`; reduced motion removes the transition.
 
 ```tsx
 import { Select, SelectItem, SelectPopup, SelectTrigger } from '@/components/Select'
@@ -240,7 +275,7 @@ import { Select, SelectItem, SelectPopup, SelectTrigger } from '@/components/Sel
 
 ### `Switch`
 
-On/off toggle built on `@base-ui/react/switch` (`Root` + `Thumb`). Monochrome: off is a `background/offset/plus` track with a `text/primary` thumb; on inverts to a `text/primary` track with a `text/primary/inverse` thumb. State is styled through Base UI's `data-checked` / `data-disabled` attributes, so it works uncontrolled, controlled, or inside a Base UI `Field`. Focus-visible draws a 2px `border/offset/plus` outline.
+On/off toggle built on `@base-ui/react/switch` (`Root` + `Thumb`). Monochrome: off is a `background/offset/plus` track with a `text/primary` thumb; on inverts to a `text/primary` track with a `text/primary/inverse` thumb. The control uses the shared press spring while the thumb and colors transition together over 150ms. State is styled through Base UI's `data-checked` / `data-disabled` attributes, so it works uncontrolled, controlled, or inside a Base UI `Field`. Focus-visible draws a 2px `border/offset/plus` outline.
 
 ```tsx
 import { Switch } from '@/components/Switch'
@@ -255,7 +290,7 @@ Props: everything from `Switch.Root` — `checked` / `defaultChecked`, `onChecke
 
 ### `Checkbox`
 
-Tri-state checkbox built on `@base-ui/react/checkbox` (`Root` + `Indicator`). Unchecked sits on `background/offset` with a `border/offset` edge (`border/offset/plus` on hover); checked and indeterminate invert to a `text/primary` box with an inverse lucide `Check` or `Minus`. Works uncontrolled, controlled, or inside a Base UI `Field`; for a group of options wrap in a `<label>` with `Text as="span"`.
+Tri-state checkbox built on `@base-ui/react/checkbox` (`Root` + `Indicator`). Unchecked sits on `background/offset` with a `border/offset` edge (`border/offset/plus` on hover); checked and indeterminate invert to a `text/primary` box with an inverse lucide `Check` or `Minus`. It uses the same local press spring and 150ms state transition as Switch. Works uncontrolled, controlled, or inside a Base UI `Field`; for a group of options wrap in a `<label>` with `Text as="span"`.
 
 ```tsx
 import { Checkbox } from '@/components/Checkbox'
@@ -277,7 +312,7 @@ Props: everything from `Checkbox.Root` — `checked` / `defaultChecked`, `indete
 
 ### `Tabs`
 
-Switches between sibling views without leaving the page. Built on Base UI `Tabs`; compose `Tabs > TabsList > Tab (+ TabsIndicator)` with one `TabsPanel` per tab. `TabsList` picks the look for every tab inside it: `line` (default) is a hairline row where the active tab turns `text/primary` and a `TabsIndicator` slides an underline to it; `segmented` is an inset `background/base` track for cards, where the active tab steps up to `background/offset/plus` and no indicator is needed. Arrow keys move focus, Enter/Space activates; disabled tabs stay focusable but never activate.
+Switches between sibling views without leaving the page. Built on Base UI `Tabs`; compose `Tabs > TabsList > Tab (+ TabsIndicator)` with one `TabsPanel` per tab. `TabsList` picks the look for every tab inside it: `line` (default) is a hairline row where the active tab turns `text/primary` and a `TabsIndicator` moves over the shared 200ms spatial duration; `segmented` is an inset `background/base` track for cards, where the active tab steps up to `background/offset/plus` and no indicator is needed. Arrow keys move focus, Enter/Space activates; disabled tabs stay focusable but never activate.
 
 ```tsx
 import { Tab, Tabs, TabsIndicator, TabsList, TabsPanel } from '@/components/Tabs'
@@ -406,7 +441,7 @@ import { Dialog, DialogClose, DialogDescription, DialogPopup, DialogTitle, Dialo
 
 ### Token export
 
-`pnpm tokens` runs `scripts/export-tokens.ts` and writes `tokens.json` at the package root in W3C Design Tokens (DTCG) format, suitable for Tokens Studio or a Figma Variables API import. Groups: `color` (semantic tokens nested by `/` path; a token that is also a group prefix lives at `DEFAULT`, e.g. `color.text.primary.DEFAULT`), `hue.<hue>.<role>`, `shadow.<level>`, `radius.<step>`, `typography.<variant>`. `$value` is the default (dark) theme; per-theme values sit under `$extensions.aether.values` and the runtime custom property under `$extensions.aether.cssVariable`. Regenerate and commit whenever `src/theme/*` or `src/components/textVariants.ts` change.
+`pnpm tokens` runs `scripts/export-tokens.ts` and writes `tokens.json` at the package root in W3C Design Tokens (DTCG) format, suitable for Tokens Studio or a Figma Variables API import. Groups: `color` (semantic tokens nested by `/` path; a token that is also a group prefix lives at `DEFAULT`, e.g. `color.text.primary.DEFAULT`), `hue.<hue>.<role>`, `shadow.<level>`, `radius.<step>`, `typography.<variant>`, and `motion` (duration, easing, and press-spring values). `$value` is the default (dark) theme; per-theme values sit under `$extensions.aether.values` and the runtime custom property under `$extensions.aether.cssVariable`. Regenerate and commit whenever `src/theme/*` or `src/components/textVariants.ts` change.
 
 ### MCP server
 

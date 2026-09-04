@@ -2,6 +2,7 @@ import { Dialog as BaseDialog } from '@base-ui/react/dialog'
 import type { ComponentProps } from 'react'
 
 import { cn } from '@/lib/utils'
+import { backdropMotionClasses, dialogMotionClasses } from '@/theme/motion'
 
 import { textVariantClasses } from './textVariants'
 
@@ -64,16 +65,15 @@ export function DialogPopup({
     <BaseDialog.Portal>
       <BaseDialog.Backdrop
         className={cn(
-          'fixed inset-0 z-50 bg-background-base/60 transition-opacity duration-150',
-          'data-[starting-style]:opacity-0 data-[ending-style]:opacity-0',
+          'fixed inset-0 z-50 bg-background-base/60',
+          backdropMotionClasses,
           backdropClassName,
         )}
       />
       <BaseDialog.Popup
         className={cn(
           'fixed top-1/2 left-1/2 z-50 w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-xl border border-border-base bg-background-offset p-6 text-text-primary shadow-lg outline-none',
-          'transition-[opacity,scale] duration-150',
-          'data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[ending-style]:scale-95 data-[ending-style]:opacity-0',
+          dialogMotionClasses,
           'data-[nested-dialog-open]:scale-[0.97] data-[nested-dialog-open]:opacity-70',
           className,
         )}

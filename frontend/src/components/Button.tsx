@@ -1,7 +1,9 @@
 import { Button as BaseButton } from '@base-ui/react/button'
+import { motion } from 'motion/react'
 import type { ComponentProps } from 'react'
 
 import { cn } from '@/lib/utils'
+import { usePressMotion } from '@/theme/usePressMotion'
 
 import { buttonClasses, type ButtonSize, type ButtonVariant } from './buttonVariants'
 
@@ -36,10 +38,14 @@ export function Button({
   size = 'md',
   iconOnly = false,
   className,
+  render,
   ...props
 }: ButtonProps) {
+  const motionProps = usePressMotion()
+
   return (
     <BaseButton
+      render={render ?? <motion.button {...motionProps} />}
       className={cn(buttonClasses(variant, size, iconOnly), className)}
       {...props}
     />

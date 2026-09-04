@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "aether-design-system": {
+      "command": "node",
+      "args": ["frontend/mcp/server.ts"]
+    }
+  }
+}

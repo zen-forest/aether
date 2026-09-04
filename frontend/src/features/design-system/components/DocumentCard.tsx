@@ -3,6 +3,8 @@ import remarkGfm from 'remark-gfm'
 
 import { Text } from '@/components/Text'
 import { textVariantClasses } from '@/components/textVariants'
+import { cn } from '@/lib/utils'
+import { stateMotionClasses } from '@/theme/motion'
 
 const markdownComponents: Components = {
   h1: ({ children }) => (
@@ -92,7 +94,12 @@ export type DocumentCardProps = {
 export function DocumentCard({ name, source, href }: DocumentCardProps) {
   return (
     <details className="group overflow-hidden rounded-lg border border-border-base">
-      <summary className="flex cursor-pointer list-none items-center gap-3 bg-background-offset py-2 pr-3 pl-5 transition-colors group-open:border-b group-open:border-border-base hover:bg-background-offset-plus [&::-webkit-details-marker]:hidden">
+      <summary
+        className={cn(
+          'flex cursor-pointer list-none items-center gap-3 bg-background-offset py-2 pr-3 pl-5 transition-colors group-open:border-b group-open:border-border-base hover:bg-background-offset-plus [&::-webkit-details-marker]:hidden',
+          stateMotionClasses,
+        )}
+      >
         <svg
           aria-hidden="true"
           viewBox="0 0 16 16"
@@ -101,7 +108,10 @@ export function DocumentCard({ name, source, href }: DocumentCardProps) {
           strokeWidth="1.5"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="size-3.5 text-text-secondary transition-transform group-open:rotate-90"
+          className={cn(
+            'size-3.5 text-text-secondary transition-transform group-open:rotate-90',
+            stateMotionClasses,
+          )}
         >
           <path d="M6 3.5 10.5 8 6 12.5" />
         </svg>

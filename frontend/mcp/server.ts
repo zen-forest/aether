@@ -54,7 +54,7 @@ server.registerTool(
   {
     title: 'List design tokens',
     description:
-      'Aether design tokens in W3C Design Tokens (DTCG) format. Omit `group` for the whole document; pass one of color | hue | shadow | radius | typography for a single group. Colors carry per-theme values under $extensions.aether.values.',
+      'Aether design tokens in W3C Design Tokens (DTCG) format. Omit `group` for the whole document; pass one of color | hue | shadow | radius | typography | motion for a single group. Colors carry per-theme values under $extensions.aether.values.',
     inputSchema: { group: z.enum(tokenGroups).optional() },
   },
   ({ group }) => {
@@ -110,7 +110,7 @@ server.registerTool(
   'get_design_doc',
   {
     title: 'Get design document',
-    description: 'design.md: the source of truth for typography, color, and component usage rules.',
+    description: 'design.md: the source of truth for typography, color, motion, and component usage rules.',
   },
   () => text(readFileSync(designDoc, 'utf8')),
 )

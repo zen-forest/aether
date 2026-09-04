@@ -3,6 +3,7 @@ import { CheckIcon } from 'lucide-react'
 import type { ComponentProps, ReactNode } from 'react'
 
 import { cn } from '@/lib/utils'
+import { popupMotionClasses } from '@/theme/motion'
 
 import { textVariantClasses } from './textVariants'
 
@@ -36,7 +37,7 @@ export function MenuPopup({
         <BaseMenu.Popup
           className={cn(
             'min-w-40 origin-(--transform-origin) rounded-md border border-border-base bg-background-offset p-1 text-text-primary shadow-md outline-none',
-            'transition-[opacity,scale] duration-100 data-[ending-style]:scale-95 data-[ending-style]:opacity-0 data-[starting-style]:scale-95 data-[starting-style]:opacity-0',
+            popupMotionClasses,
             className,
           )}
           {...props}

@@ -2,14 +2,95 @@
 @import '@fontsource-variable/geist-mono';
 @import 'tailwindcss';
 
+/* `applyTheme` sets data-theme on <html>; `dark:` follows it, not the OS. */
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
 @theme {
+  --color-*: initial;
+
   --font-sans: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
   --font-mono: 'Geist Mono Variable', ui-monospace, monospace;
+}
+
+/*
+ * Color utilities resolve to runtime variables written by `applyTheme`
+ * (src/theme/applyTheme.ts). Values live only in src/theme/themes.ts.
+ */
+@theme inline {
+  --color-text-primary: var(--text-primary);
+  --color-text-primary-inverse: var(--text-primary-inverse);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-secondary-inverse: var(--text-secondary-inverse);
+
+  --color-background-base: var(--background-base);
+  --color-background-offset: var(--background-offset);
+  --color-background-offset-plus: var(--background-offset-plus);
+
+  --color-border-base: var(--border-base);
+  --color-border-offset: var(--border-offset);
+  --color-border-offset-plus: var(--border-offset-plus);
+
+  --color-status-success: var(--status-success);
+  --color-status-error: var(--status-error);
+  --color-status-warning: var(--status-warning);
+  --color-status-info: var(--status-info);
+  --color-notification: var(--notification);
+
+  --color-red-subtle: var(--red-subtle);
+  --color-red-line: var(--red-line);
+  --color-red-solid: var(--red-solid);
+  --color-red-fg: var(--red-fg);
+
+  --color-orange-subtle: var(--orange-subtle);
+  --color-orange-line: var(--orange-line);
+  --color-orange-solid: var(--orange-solid);
+  --color-orange-fg: var(--orange-fg);
+
+  --color-amber-subtle: var(--amber-subtle);
+  --color-amber-line: var(--amber-line);
+  --color-amber-solid: var(--amber-solid);
+  --color-amber-fg: var(--amber-fg);
+
+  --color-green-subtle: var(--green-subtle);
+  --color-green-line: var(--green-line);
+  --color-green-solid: var(--green-solid);
+  --color-green-fg: var(--green-fg);
+
+  --color-teal-subtle: var(--teal-subtle);
+  --color-teal-line: var(--teal-line);
+  --color-teal-solid: var(--teal-solid);
+  --color-teal-fg: var(--teal-fg);
+
+  --color-blue-subtle: var(--blue-subtle);
+  --color-blue-line: var(--blue-line);
+  --color-blue-solid: var(--blue-solid);
+  --color-blue-fg: var(--blue-fg);
+
+  --color-indigo-subtle: var(--indigo-subtle);
+  --color-indigo-line: var(--indigo-line);
+  --color-indigo-solid: var(--indigo-solid);
+  --color-indigo-fg: var(--indigo-fg);
+
+  --color-purple-subtle: var(--purple-subtle);
+  --color-purple-line: var(--purple-line);
+  --color-purple-solid: var(--purple-solid);
+  --color-purple-fg: var(--purple-fg);
+
+  --color-pink-subtle: var(--pink-subtle);
+  --color-pink-line: var(--pink-line);
+  --color-pink-solid: var(--pink-solid);
+  --color-pink-fg: var(--pink-fg);
 }
 
 @layer base {
   body {
     margin: 0;
     font-family: var(--font-sans);
+    background-color: var(--background-base);
+    color: var(--text-primary);
+  }
+  /* Base UI popups are portaled to <body>; isolating the app root keeps them above it. */
+  #root {
+    isolation: isolate;
   }
 }

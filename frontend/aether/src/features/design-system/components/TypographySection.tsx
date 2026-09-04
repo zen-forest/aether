@@ -1,7 +1,7 @@
-import {
-  TextBlock,
-  type TextBlockVariant,
-} from '../components/TextBlock.tsx'
+import { TextBlock, type TextBlockVariant } from '@/components/TextBlock'
+
+import { Panel, PanelRow } from './Panel'
+import { Section } from './Section'
 
 const textStyles: ReadonlyArray<{
   label: string
@@ -26,37 +26,26 @@ const textStyles: ReadonlyArray<{
   { variant: 'caption-2', label: 'Caption 2 · 9/14', sample: 'The smallest supporting label' },
 ]
 
-function DesignSystemPage() {
+export function TypographySection() {
   return (
-    <main className="min-h-screen bg-neutral-950 px-6 py-16 text-neutral-100 sm:px-10">
-      <div className="mx-auto max-w-5xl">
-        <TextBlock variant="subhead-mono" className="text-neutral-500">
-          AETHER / DESIGN SYSTEM
-        </TextBlock>
-        <TextBlock variant="large-title" className="mt-3">
-          Typography
-        </TextBlock>
-        <TextBlock className="mt-3 max-w-xl text-neutral-400">
-          Geist and Geist Mono establish the first set of reusable text styles.
-          Element semantics stay independent from visual style.
-        </TextBlock>
-
-        <section className="mt-12 overflow-hidden rounded-2xl border border-white/10">
-          {textStyles.map(({ label, sample, variant }) => (
-            <div
-              className="grid gap-3 border-b border-white/10 px-5 py-5 last:border-b-0 sm:grid-cols-[180px_1fr] sm:items-baseline sm:px-6"
-              key={variant}
-            >
-              <TextBlock variant="caption-1-mono" className="text-neutral-500">
-                {label}
-              </TextBlock>
-              <TextBlock variant={variant}>{sample}</TextBlock>
-            </div>
-          ))}
-        </section>
-      </div>
-    </main>
+    <Section
+      id="typography"
+      title="Typography"
+      intro="Geist and Geist Mono establish the first set of reusable text styles. Element semantics stay independent from visual style."
+    >
+      <Panel className="mt-12">
+        {textStyles.map(({ label, sample, variant }) => (
+          <PanelRow
+            key={variant}
+            className="py-5 sm:grid-cols-[180px_1fr] sm:items-baseline"
+          >
+            <TextBlock variant="caption-1-mono" className="text-text-secondary">
+              {label}
+            </TextBlock>
+            <TextBlock variant={variant}>{sample}</TextBlock>
+          </PanelRow>
+        ))}
+      </Panel>
+    </Section>
   )
 }
-
-export default DesignSystemPage
